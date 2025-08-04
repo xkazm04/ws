@@ -1,60 +1,66 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { db, invitations, ensureTableExists } from '../../../lib/db';
-import { eq } from 'drizzle-orm';
+import { createClient } from '@/lib/supabase/server';
 
 function generateInvitationUrl(id: string) {
-  return `${process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000'}/workshop/${id}`;
+  return `${process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000'}/invite/${id}`;
 }
 
 export async function GET() {
-  try {
-    // Ensure table exists (for quick development)
-    await ensureTableExists();
-    
-    const allInvitations = await db.select().from(invitations);
-    return NextResponse.json(allInvitations);
-  } catch (error) {
-    console.error('Failed to fetch invitations:', error);
-    return NextResponse.json({ error: 'Failed to fetch invitations' }, { status: 500 });
+  const supabase = await createClient();
+  
+  const { data: invitations, error } = await supabase
+    .from('invitations')
+    .select('*')
+    .order('created_at', { ascending: false });
+
+  if (error) {
+    return NextResponse.json({ error: error.message }, { status: 500 });
   }
+
+  return NextResponse.json(invitations);
 }
 
 export async function POST(request: NextRequest) {
-  try {
-    // Ensure table exists (for quick development)
-    await ensureTableExists();
-    
-    const { id, loginEmail } = await request.json();
-    
-    const newInvitation = {
-      id,
-      link: generateInvitationUrl(id),
-      status: 'open' as const,
-      user: null,
-      loginEmail,
-      createdAt: new Date(),
-    };
+  const supabase = await createClient();
+  const body = await request.json();
+  const { id, loginEmail } = body;
 
-    const result = await db.insert(invitations).values(newInvitation).returning();
-    return NextResponse.json(result[0]);
-  } catch (error) {
-    console.error('Failed to create invitation:', error);
-    return NextResponse.json({ error: 'Failed to create invitation' }, { status: 500 });
+  const newInvitation = {
+    id,
+    link: generateInvitationUrl(id),
+    status: 'open',
+    user_name: null,
+    login_email: loginEmail,
+  };
+
+  const { data, error } = await supabase
+    .from('invitations')
+    .insert([newInvitation])
+    .select()
+    .single();
+
+  if (error) {
+    return NextResponse.json({ error: error.message }, { status: 500 });
   }
+
+  return NextResponse.json(data);
 }
 
 export async function PUT(request: NextRequest) {
-  try {
-    const { id, ...updates } = await request.json();
-    
-    const result = await db.update(invitations)
-      .set(updates)
-      .where(eq(invitations.id, id))
-      .returning();
-    
-    return NextResponse.json(result[0]);
-  } catch (error) {
-    console.error('Failed to update invitation:', error);
-    return NextResponse.json({ error: 'Failed to update invitation' }, { status: 500 });
+  const supabase = await createClient();
+  const body = await request.json();
+  const { id, ...updates } = body;
+
+  const { data, error } = await supabase
+    .from('invitations')
+    .update(updates)
+    .eq('id', id)
+    .select()
+    .single();
+
+  if (error) {
+    return NextResponse.json({ error: error.message }, { status: 500 });
   }
-} 
+
+  return NextResponse.json(data);
+}

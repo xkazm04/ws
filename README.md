@@ -1,46 +1,76 @@
-# Vercel Deployment Steps
+# Supabase + Vercel Setup Guide for Invitations
 
-## 1. Deploy your app first
-```bash
-# Push to GitHub and deploy
-vercel --prod
+## Step 1: Create Supabase Database Table
+
+1. **Deploy your Next.js app to Vercel first** (can be empty)
+2. **Add Supabase integration** from Vercel Dashboard → Storage → Create Database → Supabase
+3. **Click "Open in Supabase"** button from your Vercel project
+4. **Go to SQL Editor** in your Supabase dashboard
+5. **Run this SQL** to create your invitations table:
+
+```sql
+-- Create the invitations table
+CREATE TABLE invitations (
+  id TEXT PRIMARY KEY,
+  link TEXT NOT NULL,
+  status TEXT NOT NULL DEFAULT 'open',
+  user_name TEXT,
+  login_email TEXT NOT NULL,
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+);
+
+-- Insert sample data
+INSERT INTO invitations (id, link, status, user_name, login_email, created_at)
+VALUES
+  ('inv_sample1', 'https://your-app.vercel.app/invite/inv_sample1', 'open', NULL, 'ws1@groupon.com', '2024-01-15T00:00:00Z'),
+  ('inv_sample2', 'https://your-app.vercel.app/invite/inv_sample2', 'accepted', 'John Doe', 'john@example.com', '2024-01-16T00:00:00Z'),
+  ('inv_sample3', 'https://your-app.vercel.app/invite/inv_sample3', 'pending', NULL, 'jane@example.com', '2024-01-17T00:00:00Z');
+
+-- Enable Row Level Security
+ALTER TABLE invitations ENABLE ROW LEVEL SECURITY;
+
+-- Create policy for public read access (adjust as needed for your security requirements)
+CREATE POLICY "public can read invitations"
+ON public.invitations
+FOR SELECT TO anon
+USING (true);
+
+-- Create policy for authenticated users to insert/update (optional)
+CREATE POLICY "authenticated can manage invitations"
+ON public.invitations
+FOR ALL TO authenticated
+USING (true);
 ```
 
-## 2. Add Vercel Postgres from Dashboard
-1. Go to your project in Vercel Dashboard
-2. Click on the **Storage** tab
-3. Click **Create Database**
-4. Select **Postgres**
-5. Choose a name and region
-6. Click **Create**
+## Step 2: Create Next.js App (if you haven't already)
 
-## 3. Connect database to your project
-- Vercel will automatically add all the environment variables to your project
-- No manual configuration needed!
-
-## 4. Test your database
-After deployment, your API routes will automatically:
-- Create the table if it doesn't exist
-- Start accepting requests immediately
-
-## 5. Optional: Use Vercel CLI for local development
+If starting fresh, use the Supabase template:
 ```bash
-# Pull environment variables to local
+npx create-next-app@latest -e with-supabase your-invitation-app
+cd your-invitation-app
+```
+
+## Step 3: Connect to Vercel Project
+
+```bash
+# Link your local project to Vercel
+vercel link
+
+# Pull environment variables from Vercel (includes Supabase config)
 vercel env pull .env.local
-
-# Now you can develop locally with the same database
-npm run dev
 ```
 
-## Key Advantages of Vercel Postgres:
-- ✅ **Zero configuration** - environment variables auto-added
-- ✅ **Connection pooling** built-in
-- ✅ **Edge-optimized** for fast global access
-- ✅ **Automatic backups**
-- ✅ **Scales with your app**
-- ✅ **Free tier** available (60 hours of compute time)
+## Step 4: Environment Variables
 
-## Development vs Production:
-- **Local development**: Use SQLite version for speed
-- **Production**: Switch to Vercel Postgres for deployment
-- The API code stays exactly the same!
+After running `vercel env pull`, your `.env.local` should contain:
+```bash
+NEXT_PUBLIC_SUPABASE_URL=your_supabase_url
+NEXT_PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key
+SUPABASE_SERVICE_ROLE_KEY=your_service_role_key
+```
+
+## Step 5: Install Dependencies (if needed)
+
+```bash
+npm install @supabase/supabase-js
+```

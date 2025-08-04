@@ -1,46 +1,44 @@
-import { UserProfile, RegistrationInfo } from '@/types/user'
+import { UserProfile } from '@/types/user'
 
 const USER_PROFILE_KEY = 'workshop-user-profile'
-const REGISTRATION_INFO_KEY = 'workshop-registration-info'
 
 export class UserProfileService {
-  static saveUserProfile(profile: UserProfile): void {
-    localStorage.setItem(USER_PROFILE_KEY, JSON.stringify(profile))
+  // Save user profile to localStorage (simplified)
+  static saveUserProfile(profile: UserProfile): boolean {
+    try {
+      localStorage.setItem(USER_PROFILE_KEY, JSON.stringify(profile))
+      return true
+    } catch (error) {
+      console.error('Error saving user profile:', error)
+      return false
+    }
   }
 
+  // Get user profile from localStorage
   static getUserProfile(): UserProfile | null {
-    const stored = localStorage.getItem(USER_PROFILE_KEY)
-    if (!stored) return null
-    
     try {
+      const stored = localStorage.getItem(USER_PROFILE_KEY)
+      if (!stored) return null
+      
       return JSON.parse(stored)
     } catch (error) {
-      console.error('Error parsing user profile from localStorage:', error)
+      console.error('Error fetching user profile:', error)
       return null
     }
   }
 
-  static saveRegistrationInfo(info: RegistrationInfo): void {
-    localStorage.setItem(REGISTRATION_INFO_KEY, JSON.stringify(info))
-  }
-
-  static getRegistrationInfo(): RegistrationInfo | null {
-    const stored = localStorage.getItem(REGISTRATION_INFO_KEY)
-    if (!stored) return null
-    
+  // Clear user data from localStorage
+  static clearUserData(): boolean {
     try {
-      return JSON.parse(stored)
+      localStorage.removeItem(USER_PROFILE_KEY)
+      return true
     } catch (error) {
-      console.error('Error parsing registration info from localStorage:', error)
-      return null
+      console.error('Error clearing user data:', error)
+      return false
     }
   }
 
-  static clearUserData(): void {
-    localStorage.removeItem(USER_PROFILE_KEY)
-    localStorage.removeItem(REGISTRATION_INFO_KEY)
-  }
-
+  // Check if user is registered
   static isUserRegistered(): boolean {
     return this.getUserProfile() !== null
   }

@@ -11,7 +11,9 @@ import gmailMd from './workflow/gmail.md'
 import aiAgentMd from './workflow/ai-agent.md'
 import conditionalMd from './workflow/conditional.md'
 import workflowAsanaMd from './workflow/asana.md'
-import toolsMd from './workflow/tools.md'
+// Optional imports
+import toolsMd from './optional/tools.md'
+import asanaDetailMd from './optional/asanaDetail.md'
 
 export interface Chapter {
   id: string
@@ -111,6 +113,24 @@ export const tutorialData: Tutorial = {
           title: "Optional: Tools for AI",
           completed: false,
           content: toolsMd
+        }
+      ]
+    },
+    {
+      id: "optional",
+      title: "OPTIONAL CONTENT",
+      chapters: [
+        {
+          id: "tools",
+          title: "Optional: Tool for AI",
+          completed: false,
+          content: toolsMd
+        },
+        {
+          id: "asana-detail",
+          title: "Asana metadata",
+          completed: false,
+          content: asanaDetailMd
         }
       ]
     }

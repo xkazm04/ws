@@ -7,47 +7,38 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Alert, AlertDescription } from '@/components/ui/alert'
 import { InvitationService } from '@/services/invitationService'
 import { UserProfileService } from '@/services/userProfileService'
-import { UserProfile, RegistrationInfo } from '@/types/user'
+import { UserProfile } from '@/types/user'
 import { toast } from 'sonner'
 import { CheckCircleIcon, CopyIcon, AlertTriangleIcon } from 'lucide-react'
 
 interface FormData {
   name: string
-  surname: string
 }
 
 interface FormErrors {
   name?: string
-  surname?: string
 }
 
 export function WorkshopRegistration() {
-  const [formData, setFormData] = useState<FormData>({ name: '', surname: '' })
+  const [formData, setFormData] = useState<FormData>({ name: '' })
   const [errors, setErrors] = useState<FormErrors>({})
-  const [invitationUrl, setInvitationUrl] = useState<string>('')
+  const [userProfile, setUserProfile] = useState<UserProfile | null>(null)
   const [isSubmitting, setIsSubmitting] = useState(false)
-  const [registrationInfo, setRegistrationInfo] = useState<RegistrationInfo | null>(null)
   const [isLoading, setIsLoading] = useState(true)
 
-  // Initialize invitation data and check for existing user registration
+  // Check for existing user registration
   useEffect(() => {
     const initializeData = async () => {
       try {
-        // Check for existing user registration
+        // Check for existing user registration in localStorage
         const existingUser = UserProfileService.getUserProfile()
-        const existingRegistrationInfo = UserProfileService.getRegistrationInfo()
         
-        if (existingUser && existingRegistrationInfo) {
-          setInvitationUrl(existingUser.invitationUrl)
-          setRegistrationInfo(existingRegistrationInfo)
-          setIsLoading(false)
-          return
+        if (existingUser) {
+          setUserProfile(existingUser)
         }
-
-        await InvitationService.initializeSampleData()
       } catch (error) {
         console.error('Error initializing data:', error)
-        toast.error('Failed to load invitation data')
+        toast.error('Failed to load user data')
       } finally {
         setIsLoading(false)
       }
@@ -60,11 +51,7 @@ export function WorkshopRegistration() {
     const newErrors: FormErrors = {}
     
     if (!formData.name.trim()) {
-      newErrors.name = 'Name is required'
-    }
-    
-    if (!formData.surname.trim()) {
-      newErrors.surname = 'Surname is required'
+      newErrors.name = 'Full name is required'
     }
     
     setErrors(newErrors)
@@ -81,39 +68,29 @@ export function WorkshopRegistration() {
     setIsSubmitting(true)
     
     try {
-      // Simulate processing time
-      await new Promise(resolve => setTimeout(resolve, 800))
+      const result = await InvitationService.registerUser(formData.name.trim())
       
-      const userName = `${formData.name} ${formData.surname}`
-      const { invitation, invitationUrl: resultUrl } = await InvitationService.registerUser(userName)
-      
-      if (!invitation || !resultUrl) {
-        toast.error('Failed to register. Please try again.')
+      if (!result.success) {
+        toast.error(result.error || 'Registration failed. Please try again.')
         return
       }
       
-      // Refresh invitation data to get updated counts
-      
-      // Save user profile and registration info to localStorage
+      // Save user profile to localStorage
       const userProfile: UserProfile = {
-        name: formData.name,
-        surname: formData.surname,
-        invitationUrl: resultUrl,
-        loginEmail: invitation.loginEmail,
+        name: formData.name.trim(),
+        invitationUrl: result.invitationUrl!,
+        loginEmail: result.loginEmail!,
         registrationDate: new Date().toISOString()
       }
       
-
-      const registrationInfo: RegistrationInfo = {
-        user: userProfile,
+      const saved = UserProfileService.saveUserProfile(userProfile)
+      
+      if (!saved) {
+        toast.error('Failed to save registration data locally.')
+        return
       }
       
-      UserProfileService.saveUserProfile(userProfile)
-      UserProfileService.saveRegistrationInfo(registrationInfo)
-      
-      setInvitationUrl(resultUrl)
-      setRegistrationInfo(registrationInfo)
-      
+      setUserProfile(userProfile)
       toast.success('Registration successful!')
     } catch (error) {
       console.error('Registration error:', error)
@@ -156,7 +133,7 @@ export function WorkshopRegistration() {
     )
   }
 
-  if (invitationUrl && registrationInfo) {
+  if (userProfile) {
     return (
       <div className="h-full bg-background flex items-center justify-center p-6">
         <Card className="w-full max-w-md relative">          
@@ -165,7 +142,7 @@ export function WorkshopRegistration() {
               <CheckCircleIcon className="w-16 h-16 text-primary" />
             </div>
             <CardTitle className="text-2xl font-bold text-foreground">
-              Welcome back, {registrationInfo.user.name}!
+              Welcome back, {userProfile.name}!
             </CardTitle>
             <CardDescription>
               Your spot in the n8n workshop is confirmed
@@ -178,7 +155,7 @@ export function WorkshopRegistration() {
               </Label>
               <div className="flex items-center gap-2">
                 <Button
-                  onClick={() => copyToClipboard(invitationUrl)}
+                  onClick={() => copyToClipboard(userProfile.invitationUrl)}
                   variant="outline"
                   size="sm"
                   className="flex items-center gap-2"
@@ -189,12 +166,12 @@ export function WorkshopRegistration() {
               </div>
               <div className="pt-2 border-t border-border">
                 <p className="text-sm text-muted-foreground">
-                  Login: <span className="font-mono font-medium text-foreground">{registrationInfo.user.loginEmail}</span>
+                  Login: <span className="font-mono font-medium text-foreground">{userProfile.loginEmail}</span>
                 </p>
               </div>
             </div>
             <div className="text-sm text-muted-foreground">
-              <p className="text-center">Registered on: {new Date(registrationInfo.user.registrationDate).toLocaleDateString()}</p>
+              <p className="text-center">Registered on: {new Date(userProfile.registrationDate).toLocaleDateString()}</p>
             </div>
           </CardContent>
         </Card>
@@ -218,7 +195,7 @@ export function WorkshopRegistration() {
             <div className="space-y-4">
               <div className="space-y-2">
                 <Label htmlFor="name" className="text-sm font-medium">
-                  Name *
+                  Full Name *
                 </Label>
                 <Input
                   id="name"
@@ -230,39 +207,13 @@ export function WorkshopRegistration() {
                       ? 'border-destructive focus:ring-destructive' 
                       : 'border-input focus:ring-ring'
                   }`}
-                  placeholder="Enter your first name"
+                  placeholder="Enter your full name"
                 />
                 {errors.name && (
                   <Alert variant="destructive" className="py-2">
                     <AlertTriangleIcon className="h-4 w-4" />
                     <AlertDescription className="text-sm">
                       {errors.name}
-                    </AlertDescription>
-                  </Alert>
-                )}
-              </div>
-
-              <div className="space-y-2">
-                <Label htmlFor="surname" className="text-sm font-medium">
-                  Surname *
-                </Label>
-                <Input
-                  id="surname"
-                  type="text"
-                  value={formData.surname}
-                  onChange={handleInputChange('surname')}
-                  className={`transition-colors ${
-                    errors.surname 
-                      ? 'border-destructive focus:ring-destructive' 
-                      : 'border-input focus:ring-ring'
-                  }`}
-                  placeholder="Enter your last name"
-                />
-                {errors.surname && (
-                  <Alert variant="destructive" className="py-2">
-                    <AlertTriangleIcon className="h-4 w-4" />
-                    <AlertDescription className="text-sm">
-                      {errors.surname}
                     </AlertDescription>
                   </Alert>
                 )}

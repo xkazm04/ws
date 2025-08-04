@@ -1,193 +1,115 @@
-import { InvitationLink } from '@/types/invitation';
-
-interface InvitationDbRecord {
-  id: string;
-  link: string;
-  status: 'open' | 'registered';
-  user: string | null;
-  loginEmail: string;
-  createdAt: string;
-  registeredAt?: string;
-}
+import { createClient } from '@/lib/supabase/client';
 
 export class InvitationService {
-  private static generateUniqueId(): string {
-    return 'inv_' + Math.random().toString(36).substr(2, 9) + Date.now().toString(36);
-  }
+  private static supabase = createClient()
 
-  private static generateLoginEmail(index: number): string {
-    return `ws${index}@groupon.com`;
-  }
-
-  // Fetch all invitations from API
-  static async fetchInvitations(): Promise<InvitationLink[]> {
+  // Register user and return invitation URL and login email
+  static async registerUser(userName: string): Promise<{ success: boolean; invitationUrl?: string; loginEmail?: string; error?: string }> {
     try {
-      const response = await fetch('/api/invitations');
-      if (!response.ok) {
+      // First check if this user is already registered
+      const { data: existingInvitations, error: existingError } = await this.supabase
+        .from('invitations')
+        .select('*')
+        .eq('user_name', userName)
+        .eq('status', 'registered');
+
+      if (existingError) {
+        console.error('Error checking existing registration:', existingError);
+        throw new Error('Failed to check existing registration');
+      }
+
+      if (existingInvitations && existingInvitations.length > 0) {
+        // User already registered, return existing invitation
+        const existingInvitation = existingInvitations[0];
+        return {
+          success: true,
+          invitationUrl: existingInvitation.link,
+          loginEmail: existingInvitation.login_email
+        };
+      }
+
+      // Find an open invitation
+      const { data: openInvitations, error: fetchError } = await this.supabase
+        .from('invitations')
+        .select('*')
+        .eq('status', 'open')
+        .limit(1);
+
+      if (fetchError) {
+        console.error('Error fetching open invitations:', fetchError);
         throw new Error('Failed to fetch invitations');
       }
-      const data = await response.json();
-      
-      // Transform database format to frontend format
-      return data.map((inv: InvitationDbRecord) => ({
-        id: inv.id,
-        link: inv.link,
-        status: inv.status,
-        user: inv.user,
-        loginEmail: inv.loginEmail,
-        createdAt: new Date(inv.createdAt),
-        registeredAt: inv.registeredAt ? new Date(inv.registeredAt) : undefined,
-      }));
-    } catch (error) {
-      console.error('Error fetching invitations:', error);
-      return [];
-    }
-  }
 
-  // Initialize sample data via API if no invitations exist
-  static async initializeSampleData(): Promise<InvitationLink[]> {
-    const existingInvitations = await this.fetchInvitations();
-    
-    if (existingInvitations.length > 0) {
-      return existingInvitations;
-    }
-
-    // Create sample invitations
-    const sampleData = [
-      { id: 'inv_sample1', loginEmail: 'ws1@groupon.com' },
-      { id: 'inv_sample2', loginEmail: 'ws2@groupon.com' },
-      { id: 'inv_sample3', loginEmail: 'ws3@groupon.com' },
-      { id: 'inv_sample4', loginEmail: 'ws4@groupon.com' },
-      { id: 'inv_sample5', loginEmail: 'ws5@groupon.com' },
-      { id: 'inv_sample6', loginEmail: 'ws6@groupon.com' },
-      { id: 'inv_sample7', loginEmail: 'ws7@groupon.com' },
-      { id: 'inv_sample8', loginEmail: 'ws8@groupon.com' },
-    ];
-
-    const createdInvitations: InvitationLink[] = [];
-    
-    for (const sample of sampleData) {
-      try {
-        const response = await fetch('/api/invitations', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(sample),
-        });
-        
-        if (response.ok) {
-          const created = await response.json();
-          createdInvitations.push({
-            id: created.id,
-            link: created.link,
-            status: created.status,
-            user: created.user,
-            loginEmail: created.loginEmail,
-            createdAt: new Date(created.createdAt),
-          });
-        }
-      } catch (error) {
-        console.error('Error creating sample invitation:', error);
+      if (!openInvitations || openInvitations.length === 0) {
+        return {
+          success: false,
+          error: 'All invitation slots are currently occupied. Please try again later.'
+        };
       }
-    }
 
-    return createdInvitations;
-  }
-
-  static findOpenInvitation(invitations: InvitationLink[]): InvitationLink | null {
-    return invitations.find(inv => inv.status === 'open') || null;
-  }
-
-  // Register user via API
-  static async registerUser(userName: string): Promise<{ invitation: InvitationLink | null; invitationUrl: string | null }> {
-    try {
-      // First fetch current invitations
-      const invitations = await this.fetchInvitations();
-      const openInvitation = this.findOpenInvitation(invitations);
-      
-      if (!openInvitation) {
-        // Create a new invitation if none available
-        const newInvitation = await this.createNewInvitation();
-        if (!newInvitation) {
-          return { invitation: null, invitationUrl: null };
-        }
-        
-        // Register user to the new invitation
-        return this.registerUser(userName);
-      }
+      const invitation = openInvitations[0];
 
       // Update the invitation with user registration
-      const response = await fetch('/api/invitations', {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          id: openInvitation.id,
+      const { data: updatedInvitations, error: updateError } = await this.supabase
+        .from('invitations')
+        .update({
           status: 'registered',
-          user: userName,
-          registeredAt: new Date(),
-        }),
-      });
+          user_name: userName,
+        })
+        .eq('id', invitation.id)
+        .select('*');
 
-      if (!response.ok) {
+      if (updateError) {
+        console.error('Error updating invitation:', updateError);
         throw new Error('Failed to register user');
       }
 
-      const updatedInvitation = await response.json();
+      if (!updatedInvitations || updatedInvitations.length === 0) {
+        throw new Error('No invitation was updated');
+      }
+
+      const updatedInvitation = updatedInvitations[0];
       
       return {
-        invitation: {
-          id: updatedInvitation.id,
-          link: updatedInvitation.link,
-          status: updatedInvitation.status,
-          user: updatedInvitation.user,
-          loginEmail: updatedInvitation.loginEmail,
-          createdAt: new Date(updatedInvitation.createdAt),
-          registeredAt: updatedInvitation.registeredAt ? new Date(updatedInvitation.registeredAt) : undefined,
-        },
+        success: true,
         invitationUrl: updatedInvitation.link,
+        loginEmail: updatedInvitation.login_email
       };
     } catch (error) {
       console.error('Error registering user:', error);
-      return { invitation: null, invitationUrl: null };
+      return {
+        success: false,
+        error: error instanceof Error ? error.message : 'Registration failed. Please try again.'
+      };
     }
   }
 
-  // Create new invitation via API
-  static async createNewInvitation(): Promise<InvitationLink | null> {
+  // Get registration info for a user
+  static async getUserRegistration(userName: string): Promise<{ invitationUrl?: string; loginEmail?: string } | null> {
     try {
-      const existingInvitations = await this.fetchInvitations();
-      
-      // Find the next available email index
-      const usedIndexes = existingInvitations.map(inv => {
-        const match = inv.loginEmail.match(/ws(\d+)@groupon\.com/);
-        return match ? parseInt(match[1]) : 0;
-      });
-      const nextIndex = Math.max(0, ...usedIndexes) + 1;
-      
-      const id = this.generateUniqueId();
-      const loginEmail = this.generateLoginEmail(nextIndex);
-      
-      const response = await fetch('/api/invitations', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ id, loginEmail }),
-      });
+      const { data: invitations, error } = await this.supabase
+        .from('invitations')
+        .select('*')
+        .eq('user_name', userName)
+        .eq('status', 'registered');
 
-      if (!response.ok) {
-        throw new Error('Failed to create invitation');
+      if (error) {
+        console.error('Error fetching user registration:', error);
+        return null;
       }
 
-      const created = await response.json();
-      
+      if (!invitations || invitations.length === 0) {
+        return null;
+      }
+
+      const invitation = invitations[0];
+
       return {
-        id: created.id,
-        link: created.link,
-        status: created.status,
-        user: created.user,
-        loginEmail: created.loginEmail,
-        createdAt: new Date(created.createdAt),
+        invitationUrl: invitation.link,
+        loginEmail: invitation.login_email
       };
     } catch (error) {
-      console.error('Error creating new invitation:', error);
+      console.error('Error fetching user registration:', error);
       return null;
     }
   }
