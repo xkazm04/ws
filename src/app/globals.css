@@ -1,26 +1,290 @@
 @import "tailwindcss";
+@import "tw-animate-css";
 
+/* Radix UI Color Imports */
+@import '@radix-ui/colors/gray.css';
+@import '@radix-ui/colors/gray-dark.css';
+@import '@radix-ui/colors/slate.css';
+@import '@radix-ui/colors/slate-dark.css';
+@import '@radix-ui/colors/blue.css';
+@import '@radix-ui/colors/blue-dark.css';
+@import '@radix-ui/colors/green.css';
+@import '@radix-ui/colors/green-dark.css';
+@import '@radix-ui/colors/red.css';
+@import '@radix-ui/colors/red-dark.css';
+
+/* Root CSS Variables - Light Mode Default */
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  /* Basic colors - Gray-100 background with black text */
+  --background: #f3f4f6; /* gray-100 */
+  --foreground: #000000; /* pure black */
+  
+  /* Component colors */
+  --card: #ffffff; /* white cards */
+  --card-foreground: #000000; /* black text on cards */
+  --popover: #ffffff;
+  --popover-foreground: #000000;
+  --primary: #16a34a; /* green-600 */
+  --primary-foreground: #ffffff;
+  --secondary: #e5e7eb; /* gray-200 */
+  --secondary-foreground: #000000; /* black text */
+  --muted: #f9fafb; /* gray-50 */
+  --muted-foreground: #374151; /* gray-700 */
+  --accent: #e5e7eb; /* gray-200 */
+  --accent-foreground: #000000; /* black text */
+  --destructive: #dc2626; /* red-600 */
+  --destructive-foreground: #ffffff;
+  --border: #d1d5db; /* gray-300 */
+  --input: #d1d5db; /* gray-300 */
+  --ring: #16a34a; /* green-600 */
+  
+  /* Border radius */
+  --radius: 0.5rem;
+  
+  /* Chart colors */
+  --chart-1: #16a34a;
+  --chart-2: #3b82f6;
+  --chart-3: #f59e0b;
+  --chart-4: #ef4444;
+  --chart-5: #8b5cf6;
+  
+  /* Sidebar colors */
+  --sidebar: #f9fafb; /* gray-50 */
+  --sidebar-foreground: #000000;
+  --sidebar-primary: #16a34a;
+  --sidebar-primary-foreground: #ffffff;
+  --sidebar-accent: #e5e7eb; /* gray-200 */
+  --sidebar-accent-foreground: #000000;
+  --sidebar-border: #d1d5db; /* gray-300 */
+  --sidebar-ring: #16a34a;
 }
 
-@theme inline {
+/* Dark theme - only when explicitly set via .dark class */
+.dark {
+  --background: #0f172a;
+  --foreground: #f8fafc;
+  --card: #1e293b;
+  --card-foreground: #f8fafc;
+  --popover: #1e293b;
+  --popover-foreground: #f8fafc;
+  --primary: #22c55e;
+  --primary-foreground: #0f172a;
+  --secondary: #1e293b;
+  --secondary-foreground: #f8fafc;
+  --muted: #1e293b;
+  --muted-foreground: #94a3b8;
+  --accent: #1e293b;
+  --accent-foreground: #f8fafc;
+  --destructive: #ef4444;
+  --destructive-foreground: #f8fafc;
+  --border: #334155;
+  --input: #334155;
+  --ring: #22c55e;
+  --chart-1: #22c55e;
+  --chart-2: #60a5fa;
+  --chart-3: #fbbf24;
+  --chart-4: #f87171;
+  --chart-5: #a78bfa;
+  --sidebar: #1e293b;
+  --sidebar-foreground: #f8fafc;
+  --sidebar-primary: #22c55e;
+  --sidebar-primary-foreground: #0f172a;
+  --sidebar-accent: #334155;
+  --sidebar-accent-foreground: #f8fafc;
+  --sidebar-border: #334155;
+  --sidebar-ring: #22c55e;
+}
+
+/* Theme configuration */
+@theme {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-chart-1: var(--chart-1);
+  --color-chart-2: var(--chart-2);
+  --color-chart-3: var(--chart-3);
+  --color-chart-4: var(--chart-4);
+  --color-chart-5: var(--chart-5);
+  --color-sidebar: var(--sidebar);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-ring: var(--sidebar-ring);
+  
+  /* Border radius */
+  --radius-sm: calc(var(--radius) - 2px);
+  --radius-md: var(--radius);
+  --radius-lg: calc(var(--radius) + 2px);
+  --radius-xl: calc(var(--radius) + 4px);
+  
+  /* Animations */
+  --animate-accordion-down: accordion-down 0.2s ease-out;
+  --animate-accordion-up: accordion-up 0.2s ease-out;
+  
+  /* Font configuration */
+  --font-sans: ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+  --font-mono: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+/* Keyframes */
+@keyframes accordion-down {
+  from {
+    height: 0;
+  }
+  to {
+    height: var(--radix-accordion-content-height);
   }
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+@keyframes accordion-up {
+  from {
+    height: var(--radix-accordion-content-height);
+  }
+  to {
+    height: 0;
+  }
+}
+
+@keyframes checkbox-check {
+  0% {
+    transform: scale(0);
+    opacity: 0;
+  }
+  50% {
+    transform: scale(1.2);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+@keyframes imageLoad {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Base layer styles */
+@layer base {
+  * {
+    @apply border-border;
+  }
+  
+  body {
+    @apply bg-background text-foreground;
+    font-family: var(--font-sans);
+    line-height: 1.5;
+    /* Force light background and dark text */
+    background-color: #f3f4f6 !important; /* gray-100 */
+    color: #000000 !important; /* pure black */
+  }
+  
+  /* Markdown content styling */
+  .prose {
+    @apply text-foreground;
+    line-height: 1.7;
+    color: #000000 !important; /* ensure black text */
+  }
+  
+  .prose h1,
+  .prose h2,
+  .prose h3 {
+    @apply text-foreground;
+    line-height: 1.3;
+    color: #000000 !important; /* ensure black headings */
+  }
+  
+  .prose code {
+    @apply bg-muted px-1 py-0.5 rounded text-sm;
+    font-family: var(--font-mono);
+    background-color: #f9fafb !important; /* gray-50 */
+    color: #000000 !important;
+  }
+  
+  .prose pre {
+    @apply bg-muted p-4 rounded-lg overflow-x-auto;
+    font-family: var(--font-mono);
+    background-color: #f9fafb !important; /* gray-50 */
+    color: #000000 !important;
+  }
+  
+  .prose img {
+    @apply max-w-full h-auto rounded-lg shadow-md;
+  }
+  
+  /* Scrolling and layout */
+  [data-slot="scroll-area-viewport"] {
+    overflow-y: auto;
+    max-height: 100%;
+  }
+  
+  .transition-layout {
+    transition: margin-right 300ms ease-in-out, width 300ms ease-in-out;
+  }
+  
+  /* Demo GIF styling */
+  .demo-gif {
+    @apply border-0 rounded-lg;
+  }
+  
+  /* Fullscreen overlay */
+  .fullscreen-overlay {
+    @apply fixed inset-0 z-50 bg-background;
+    background-color: #f3f4f6 !important; /* gray-100 */
+  }
+  
+  /* Enhanced checkbox animations */
+  .checkbox-wrapper {
+    @apply relative;
+  }
+  
+  .checkbox-wrapper::before {
+    content: '';
+    @apply absolute top-1/2 left-1/2 w-0 h-0 bg-primary rounded-full transform -translate-x-1/2 -translate-y-1/2 transition-all duration-300 opacity-0 -z-10;
+    transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  
+  .checkbox-wrapper:active::before {
+    @apply w-8 h-8 opacity-15;
+  }
+  
+  /* Custom focus ring */
+  .checkbox-focus:focus-visible {
+    @apply outline-2 outline-primary outline-offset-2;
+  }
+  
+  /* Animation classes */
+  .checkbox-check-animate {
+    animation: checkbox-check 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+  }
+  
+  .image-loaded {
+    animation: imageLoad 0.3s ease-out;
+  }
 }

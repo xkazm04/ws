@@ -1,0 +1,11 @@
+export interface UserProfile {
+  name: string
+  surname: string
+  invitationUrl: string
+  loginEmail: string
+  registrationDate: string
+}
+
+export interface RegistrationInfo {
+  user: UserProfile
+}

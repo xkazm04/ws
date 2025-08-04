@@ -1,36 +1,46 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Vercel Deployment Steps
 
-## Getting Started
-
-First, run the development server:
-
+## 1. Deploy your app first
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+# Push to GitHub and deploy
+vercel --prod
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## 2. Add Vercel Postgres from Dashboard
+1. Go to your project in Vercel Dashboard
+2. Click on the **Storage** tab
+3. Click **Create Database**
+4. Select **Postgres**
+5. Choose a name and region
+6. Click **Create**
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## 3. Connect database to your project
+- Vercel will automatically add all the environment variables to your project
+- No manual configuration needed!
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## 4. Test your database
+After deployment, your API routes will automatically:
+- Create the table if it doesn't exist
+- Start accepting requests immediately
 
-## Learn More
+## 5. Optional: Use Vercel CLI for local development
+```bash
+# Pull environment variables to local
+vercel env pull .env.local
 
-To learn more about Next.js, take a look at the following resources:
+# Now you can develop locally with the same database
+npm run dev
+```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Key Advantages of Vercel Postgres:
+- ✅ **Zero configuration** - environment variables auto-added
+- ✅ **Connection pooling** built-in
+- ✅ **Edge-optimized** for fast global access
+- ✅ **Automatic backups**
+- ✅ **Scales with your app**
+- ✅ **Free tier** available (60 hours of compute time)
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## Development vs Production:
+- **Local development**: Use SQLite version for speed
+- **Production**: Switch to Vercel Postgres for deployment
+- The API code stays exactly the same!
