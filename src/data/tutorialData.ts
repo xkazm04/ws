@@ -55,12 +55,6 @@ export const tutorialData: Tutorial = {
       title: "CREDENTIALS",
       chapters: [
         {
-          id: "credentials",
-          title: "Credential Setup",
-          completed: false,
-          content: credentialsMd
-        },
-        {
           id: "email",
           title: "Email Setup",
           completed: false,
