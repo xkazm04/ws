@@ -50,6 +50,8 @@ export function WorkshopRegistration() {
     initializeData()
   }, [])
 
+
+
   const validateForm = (): boolean => {
     const newErrors: FormErrors = {}
     
@@ -125,88 +127,26 @@ export function WorkshopRegistration() {
     }
   }
 
-  // Animation variants
-  const containerVariants = {
-    hidden: { opacity: 0, y: 20 },
-    visible: { 
-      opacity: 1, 
-      y: 0,
-      transition: { 
-        duration: 0.4
-      }
-    },
-    exit: { 
-      opacity: 0, 
-      y: -20,
-      transition: { duration: 0.2 }
-    }
-  }
-
-  const formVariants = {
-    hidden: { opacity: 0, scale: 0.98 },
-    visible: { 
-      opacity: 1, 
-      scale: 1,
-      transition: { 
-        duration: 0.3,
-        delay: 0.1
-      }
-    }
-  }
-
-  const successVariants = {
-    hidden: { opacity: 0, scale: 0.98, y: 10 },
-    visible: { 
-      opacity: 1, 
-      scale: 1, 
-      y: 0,
-      transition: { 
-        duration: 0.3
-      }
-    }
-  }
-
   if (isLoading) {
     return (
       <div className="my-6 p-4 rounded-lg border border-slate-200 bg-slate-50/50">
-        <motion.div 
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          className="flex items-center justify-center space-x-3"
-        >
-          <motion.div 
-            animate={{ rotate: 360 }}
-            transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
-            className="w-5 h-5 border-2 border-slate-300 border-t-slate-600 rounded-full"
-          />
+        <div className="flex items-center justify-center space-x-3">
+          <div className="w-5 h-5 border-2 border-slate-300 border-t-slate-600 rounded-full animate-spin" />
           <p className="text-slate-600">Loading registration form...</p>
-        </motion.div>
+        </div>
       </div>
     )
   }
 
   return (
-    <motion.div 
-      initial="hidden"
-      animate="visible"
-      variants={containerVariants}
-      className="my-6"
-    >
+    <div className="my-6">
       <AnimatePresence mode="wait">
         {showSuccess && userProfile ? (
           <motion.div
             key="success"
-            initial="hidden"
-            animate="visible"
-            exit="exit"
-            variants={successVariants}
             className="space-y-6"
           >
-                          {/* Success Content - Markdown-friendly styling */}
               <motion.div 
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.3 }}
                 className="p-6 rounded-lg border border-slate-200 bg-white"
               >
                 {/* Login Email */}
@@ -234,9 +174,6 @@ export function WorkshopRegistration() {
                           {copyState === 'idle' && (
                             <motion.div
                               key="idle"
-                              initial={{ opacity: 0 }}
-                              animate={{ opacity: 1 }}
-                              exit={{ opacity: 0 }}
                             >
                               <CopyIcon className="w-5 h-5" />
                             </motion.div>
@@ -244,9 +181,6 @@ export function WorkshopRegistration() {
                           {copyState === 'copying' && (
                             <motion.div
                               key="copying"
-                              initial={{ opacity: 0 }}
-                              animate={{ opacity: 1 }}
-                              exit={{ opacity: 0 }}
                             >
                               <motion.div
                                 animate={{ rotate: 360 }}
@@ -258,10 +192,6 @@ export function WorkshopRegistration() {
                           {copyState === 'copied' && (
                             <motion.div
                               key="copied"
-                              initial={{ opacity: 0, scale: 0.8 }}
-                              animate={{ opacity: 1, scale: 1 }}
-                              exit={{ opacity: 0 }}
-                              transition={{ type: "spring", stiffness: 500, damping: 15 }}
                             >
                               <CheckCircleIcon className="w-5 h-5 text-green-600" />
                             </motion.div>
@@ -297,27 +227,16 @@ export function WorkshopRegistration() {
           </motion.div>
         ) : (
           <motion.div
-            key="form"
-            initial="hidden"
-            animate="visible"
-            exit="exit"
-            variants={formVariants}
             className="space-y-6"
           >
             {/* Form Header - More markdown-like */}
             <div className="space-y-2">
               <motion.h3 
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.1 }}
                 className="text-2xl font-bold text-slate-800"
               >
                 Workshop Registration
               </motion.h3>
               <motion.p 
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.2 }}
                 className="text-slate-600 text-base leading-relaxed"
               >
                 Reserve your spot in our upcoming automation workshop by filling out the form below.
@@ -326,9 +245,6 @@ export function WorkshopRegistration() {
 
             {/* Registration Form - Integrated styling */}
             <motion.div 
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.3 }}
               className="p-6 rounded-lg border border-slate-200 bg-white"
             >
               <form onSubmit={handleSubmit} className="space-y-6">
@@ -336,11 +252,7 @@ export function WorkshopRegistration() {
                   <Label htmlFor="name" className="text-base font-semibold text-slate-700">
                     Full Name *
                   </Label>
-                  <motion.div
-                    initial={{ opacity: 0, x: -10 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    transition={{ delay: 0.4 }}
-                  >
+                  <div>
                     <Input
                       id="name"
                       type="text"
@@ -353,14 +265,10 @@ export function WorkshopRegistration() {
                       }`}
                       placeholder="Enter your full name"
                     />
-                  </motion.div>
+                  </div>
                   <AnimatePresence>
                     {errors.name && (
                       <motion.div
-                        initial={{ opacity: 0, y: -5, height: 0 }}
-                        animate={{ opacity: 1, y: 0, height: 'auto' }}
-                        exit={{ opacity: 0, y: -5, height: 0 }}
-                        transition={{ duration: 0.2 }}
                       >
                         <Alert variant="destructive" className="py-3">
                           <AlertTriangleIcon className="h-4 w-4" />
@@ -374,11 +282,6 @@ export function WorkshopRegistration() {
                 </div>
 
                 <motion.div
-                  initial={{ opacity: 0, y: 10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 0.5 }}
-                  whileHover={{ scale: 1.01 }}
-                  whileTap={{ scale: 0.99 }}
                 >
                   <Button 
                     type="submit" 
@@ -401,6 +304,6 @@ export function WorkshopRegistration() {
           </motion.div>
         )}
       </AnimatePresence>
-    </motion.div>
+    </div>
   )
 }

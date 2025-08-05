@@ -239,21 +239,15 @@ export function MarkdownRenderer({ content }: MarkdownRendererProps) {
               )
 
             case 'component':
-              // Render React components based on componentName
+              // Render React components based on componentName - NO animation wrapper to prevent re-renders
               switch (element.componentName) {
                 case 'WorkshopRegistration':
-                  return (
-                    <MotionWrapper key={index}>
-                      <WorkshopRegistration />
-                    </MotionWrapper>
-                  )
+                  return <WorkshopRegistration key={index} />
                 default:
                   return (
-                    <MotionWrapper key={index}>
-                      <div className="p-4 bg-red-50 border border-red-200 rounded-lg">
-                        <p className="text-red-600">Unknown component: {element.componentName}</p>
-                      </div>
-                    </MotionWrapper>
+                    <div key={index} className="p-4 bg-red-50 border border-red-200 rounded-lg">
+                      <p className="text-red-600">Unknown component: {element.componentName}</p>
+                    </div>
                   )
               }
 
