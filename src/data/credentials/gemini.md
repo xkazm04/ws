@@ -8,7 +8,7 @@ Gemini is AI from Google. It's our Groupon standard covered by a strong data pri
 
 - [ ] Pass **API *Key** from the document with credentials below
     
-    - [Credentials](https://ai.google.dev/gemini-api/docs)
+    - [Credentials](https://docs.google.com/document/d/1ezkSQmC0oWahmfCRV2UJ4n5-P54k9QscA3qPLIhi0cU/edit?usp=sharing)
     
 - [ ]  Click on the top of your window and change the name of your credentials to your **“username Google Gemini (PaLM) Api”.** Save credentials and close the window.
 

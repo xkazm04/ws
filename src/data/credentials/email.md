@@ -8,7 +8,7 @@ This is the trickiest part. We need a service account in order to connect to Goo
 
 - [ ]  Pass **Client ID**, **Client Secret** per credential file
     
-- [Credentials](https://ai.google.dev/gemini-api/docs)
+- [Credentials](https://docs.google.com/document/d/1ezkSQmC0oWahmfCRV2UJ4n5-P54k9QscA3qPLIhi0cU/edit?usp=sharing)
     
 - [ ]  Now that these generic credentials are inserted, you will be able to authenticate with your own account. Click on Sign in with Google. Choose your account and sign in.
 
