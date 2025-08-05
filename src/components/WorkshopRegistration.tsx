@@ -9,7 +9,7 @@ import { InvitationService } from '@/services/invitationService'
 import { UserProfileService } from '@/services/userProfileService'
 import { UserProfile } from '@/types/user'
 import { toast } from 'sonner'
-import { CheckCircleIcon, CopyIcon, AlertTriangleIcon, UserIcon, LinkIcon } from 'lucide-react'
+import { CheckCircleIcon, CopyIcon, AlertTriangleIcon, LinkIcon } from 'lucide-react'
 
 interface FormData {
   name: string

@@ -1,21 +1,11 @@
 import { useState, useMemo } from 'react'
+import { motion, AnimatePresence } from 'framer-motion'
 import { MdCode, MdCheckbox, MdList, MdImage } from './md'
 import { WorkshopRegistration } from './WorkshopRegistration'
+import { parseMarkdownContent } from './md/mdHelpers'
 
 interface MarkdownRendererProps {
   content: string
-}
-
-interface ParsedElement {
-  type: 'header' | 'paragraph' | 'code' | 'list' | 'checkbox' | 'bold' | 'link' | 'inline-code' | 'aside' | 'divider' | 'image' | 'component'
-  content: string
-  level?: number
-  language?: string
-  checked?: boolean
-  id?: string
-  href?: string
-  alt?: string
-  componentName?: string
 }
 
 export function MarkdownRenderer({ content }: MarkdownRendererProps) {
@@ -45,156 +35,7 @@ export function MarkdownRenderer({ content }: MarkdownRendererProps) {
     })
   }
 
-  const parsedElements = useMemo(() => {
-    const lines = content.split('\n')
-    const elements: ParsedElement[] = []
-    let currentList: string[] = []
-    let checkboxCounter = 0
-
-    const flushList = () => {
-      if (currentList.length > 0) {
-        elements.push({
-          type: 'list',
-          content: currentList.join('\n')
-        })
-        currentList = []
-      }
-    }
-
-    for (let i = 0; i < lines.length; i++) {
-      const line = lines[i].trim()
-      
-      if (!line) {
-        flushList()
-        continue
-      }
-
-      // Divider
-      if (line === '---') {
-        flushList()
-        elements.push({
-          type: 'divider',
-          content: ''
-        })
-      }
-      // Aside blocks (tip boxes)
-      else if (line === '<aside>') {
-        flushList()
-        let asideContent = ''
-        i++
-        
-        while (i < lines.length && lines[i].trim() !== '</aside>') {
-          asideContent += lines[i] + '\n'
-          i++
-        }
-        
-        elements.push({
-          type: 'aside',
-          content: asideContent.trim()
-        })
-      }
-      // Headers
-      else if (line.startsWith('###')) {
-        flushList()
-        elements.push({
-          type: 'header',
-          level: 3,
-          content: line.replace(/^### /, '').replace(/^\*\*(.*?)\*\*$/, '$1') // Remove bold markers from headers
-        })
-      } else if (line.startsWith('##')) {
-        flushList()
-        elements.push({
-          type: 'header',
-          level: 2,
-          content: line.replace(/^## /, '').replace(/^\*\*(.*?)\*\*$/, '$1') // Remove bold markers from headers
-        })
-      } else if (line.startsWith('#')) {
-        flushList()
-        elements.push({
-          type: 'header',
-          level: 1,
-          content: line.replace(/^# /, '').replace(/^\*\*(.*?)\*\*$/, '$1') // Remove bold markers from headers
-        })
-      }
-      // Code blocks
-      else if (line.startsWith('```')) {
-        flushList()
-        const language = line.replace('```', '') || 'javascript'
-        let codeContent = ''
-        i++
-        
-        while (i < lines.length && !lines[i].trim().startsWith('```')) {
-          codeContent += lines[i] + '\n'
-          i++
-        }
-        
-        elements.push({
-          type: 'code',
-          language,
-          content: codeContent.replace(/\n$/, '') // Remove trailing newline
-        })
-      }
-      // Checkboxes
-      else if (line.match(/^- \[(x| )\]/)) {
-        flushList()
-        const checked = line.includes('[x]')
-        const text = line.replace(/^- \[(x| )\] /, '')
-        const id = `checkbox-${checkboxCounter++}`
-        
-        elements.push({
-          type: 'checkbox',
-          content: text,
-          checked,
-          id
-        })
-      }
-      // Regular list items
-      else if (line.startsWith('- ')) {
-        currentList.push(line.replace(/^- /, ''))
-      }
-      // Numbered list items
-      else if (line.match(/^\d+\. /)) {
-        currentList.push(line.replace(/^\d+\. /, ''))
-      }
-      // Images - standalone images on their own line (with optional whitespace)
-      else if (line.match(/^\s*\[([^\]]*)\]\(([^)]+)\)\s*$/)) {
-        flushList()
-        const match = line.match(/^\s*\[([^\]]*)\]\(([^)]+)\)\s*$/)
-        if (match) {
-          elements.push({
-            type: 'image',
-            content: match[2].trim(), // URL
-            alt: match[1].trim() // Alt text
-          })
-        }
-      }
-      // React components - <component>ComponentName</component>
-      else if (line.match(/^\s*<component>([^<]+)<\/component>\s*$/)) {
-        flushList()
-        const match = line.match(/^\s*<component>([^<]+)<\/component>\s*$/)
-        if (match) {
-          elements.push({
-            type: 'component',
-            content: match[1].trim(),
-            componentName: match[1].trim()
-          })
-        }
-      }
-      // Regular paragraphs
-      else {
-        flushList()
-        elements.push({
-          type: 'paragraph',
-          content: line
-        })
-      }
-    }
-    
-    flushList()
-    return elements
-  }, [content])
-
-
+  const parsedElements = useMemo(() => parseMarkdownContent(content), [content])
 
   const renderInlineContent = (text: string) => {
     // Process in order: bold first, then italic (since bold uses ** and italic uses *)
@@ -220,129 +61,192 @@ export function MarkdownRenderer({ content }: MarkdownRendererProps) {
     return <span dangerouslySetInnerHTML={{ __html: processed }} />
   }
 
+  // Animation variants for smooth content transitions
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: {
+        staggerChildren: 0.05,
+        delayChildren: 0.1
+      }
+    }
+  }
+
+  const itemVariants = {
+    hidden: { 
+      opacity: 0, 
+      y: 20,
+      scale: 0.95
+    },
+    visible: { 
+      opacity: 1, 
+      y: 0,
+      scale: 1,
+      transition: {
+        type: "spring" as const,
+        stiffness: 100,
+        damping: 15,
+        mass: 0.8
+      }
+    }
+  }
+
   return (
-    <div className="prose prose-gray max-w-none">
-      {parsedElements.map((element, index) => {
-        switch (element.type) {
-          case 'header':
-            const headerClasses = {
-              1: 'text-3xl font-bold text-foreground mb-6 mt-0',
-              2: 'text-2xl font-bold text-foreground mb-6 mt-10',
-              3: 'text-xl font-semibold text-foreground mb-4 mt-8'
-            }
-            const HeaderElement = element.level === 1 ? 'h1' : element.level === 2 ? 'h2' : 'h3'
-            return (
-              <HeaderElement key={index} className={headerClasses[element.level as keyof typeof headerClasses]}>
-                {element.content}
-              </HeaderElement>
-            )
+    <motion.div 
+      className="prose prose-gray max-w-none"
+      variants={containerVariants}
+      initial="hidden"
+      animate="visible"
+      key={content.slice(0, 50)} // Re-trigger animation when content changes
+    >
+      <AnimatePresence mode="wait">
+        {parsedElements.map((element, index) => {
+          const MotionWrapper = ({ children }: { children: React.ReactNode }) => (
+            <motion.div variants={itemVariants}>
+              {children}
+            </motion.div>
+          )
 
-          case 'code':
-            return (
-              <MdCode 
-                key={index}
-                content={element.content}
-                language={element.language || 'javascript'}
-                index={index}
-              />
-            )
+          switch (element.type) {
+            case 'header':
+              const headerClasses = {
+                1: 'text-3xl font-bold text-foreground mb-6 mt-0',
+                2: 'text-2xl font-bold text-foreground mb-6 mt-10',
+                3: 'text-xl font-semibold text-foreground mb-4 mt-8'
+              }
+              const HeaderElement = element.level === 1 ? 'h1' : element.level === 2 ? 'h2' : 'h3'
+              return (
+                <MotionWrapper key={index}>
+                  <HeaderElement className={headerClasses[element.level as keyof typeof headerClasses]}>
+                    {element.content}
+                  </HeaderElement>
+                </MotionWrapper>
+              )
 
-          case 'checkbox':
-            const isChecked = checkboxStates[element.id!] ?? element.checked
-            const isAnimating = animatingCheckboxes.has(element.id!)
-            return (
-              <MdCheckbox
-                key={index}
-                content={element.content}
-                checked={element.checked}
-                id={element.id!}
-                renderInlineContent={renderInlineContent}
-                onToggle={toggleCheckbox}
-                isChecked={isChecked}
-                isAnimating={isAnimating}
-              />
-            )
+            case 'code':
+              return (
+                <MotionWrapper key={index}>
+                  <MdCode 
+                    content={element.content}
+                    language={element.language || 'javascript'}
+                    index={index}
+                  />
+                </MotionWrapper>
+              )
 
-          case 'list':
-            return (
-                          <MdList
-              key={index}
-              content={element.content}
-              renderInlineContent={renderInlineContent}
-            />
-            )
+            case 'checkbox':
+              const isChecked = checkboxStates[element.id!] ?? element.checked
+              const isAnimating = animatingCheckboxes.has(element.id!)
+              return (
+                <MotionWrapper key={index}>
+                  <MdCheckbox
+                    content={element.content}
+                    checked={element.checked}
+                    id={element.id!}
+                    renderInlineContent={renderInlineContent}
+                    onToggle={toggleCheckbox}
+                    isChecked={isChecked}
+                    isAnimating={isAnimating}
+                  />
+                </MotionWrapper>
+              )
 
-          case 'aside':
-            return (
-              <div key={index} className="my-6 p-4 bg-blue-50 border-l-4 border-blue-400 rounded-r-lg shadow-sm">
-                <div className="flex items-start gap-3">
-                  <div className="flex-shrink-0 w-6 h-6 bg-blue-100 rounded-full flex items-center justify-center mt-1">
-                    <span className="text-blue-600 text-sm font-semibold">💡</span>
+            case 'list':
+              return (
+                <MotionWrapper key={index}>
+                  <MdList
+                    content={element.content}
+                    renderInlineContent={renderInlineContent}
+                  />
+                </MotionWrapper>
+              )
+
+            case 'aside':
+              return (
+                <MotionWrapper key={index}>
+                  <div className="my-6 p-4 bg-blue-50 border-l-4 border-blue-400 rounded-r-lg shadow-sm">
+                    <div className="flex items-start gap-3">
+                      <div className="flex-shrink-0 w-6 h-6 bg-blue-100 rounded-full flex items-center justify-center mt-1">
+                        <span className="text-blue-600 text-sm font-semibold">💡</span>
+                      </div>
+                      <div className="text-blue-800 space-y-2 flex-1">
+                        {element.content.split('\n').map((line, lineIndex) => {
+                          const trimmedLine = line.trim()
+                          if (!trimmedLine) return null
+                          
+                          // Handle headers within aside blocks - remove the ### and ** formatting
+                          if (trimmedLine.startsWith('###')) {
+                            const headerText = trimmedLine.replace(/^### /, '').replace(/^\*\*(.*?)\*\*$/, '$1')
+                            return (
+                              <h4 key={lineIndex} className="font-semibold text-blue-900 text-lg mb-2 mt-1">
+                                {headerText}
+                              </h4>
+                            )
+                          }
+                          
+                          return (
+                            <p key={lineIndex} className="leading-relaxed">
+                              {renderInlineContent(trimmedLine)}
+                            </p>
+                          )
+                        })}
+                      </div>
+                    </div>
                   </div>
-                  <div className="text-blue-800 space-y-2 flex-1">
-                    {element.content.split('\n').map((line, lineIndex) => {
-                      const trimmedLine = line.trim()
-                      if (!trimmedLine) return null
-                      
-                      // Handle headers within aside blocks - remove the ### and ** formatting
-                      if (trimmedLine.startsWith('###')) {
-                        const headerText = trimmedLine.replace(/^### /, '').replace(/^\*\*(.*?)\*\*$/, '$1')
-                        return (
-                          <h4 key={lineIndex} className="font-semibold text-blue-900 text-lg mb-2 mt-1">
-                            {headerText}
-                          </h4>
-                        )
-                      }
-                      
-                      return (
-                        <p key={lineIndex} className="leading-relaxed">
-                          {renderInlineContent(trimmedLine)}
-                        </p>
-                      )
-                    })}
-                  </div>
-                </div>
-              </div>
-            )
+                </MotionWrapper>
+              )
 
-          case 'divider':
-            return (
-              <hr key={index} className="my-8 border-0 h-px bg-gradient-to-r from-transparent via-border to-transparent" />
-            )
+            case 'divider':
+              return (
+                <MotionWrapper key={index}>
+                  <hr className="my-8 border-0 h-px bg-gradient-to-r from-transparent via-border to-transparent" />
+                </MotionWrapper>
+              )
 
-          case 'image':
-            return (
-                          <MdImage 
-              key={index}
-              content={element.content}
-              alt={element.alt}
-            />
-            )
+            case 'image':
+              return (
+                <MotionWrapper key={index}>
+                  <MdImage 
+                    content={element.content}
+                    alt={element.alt}
+                  />
+                </MotionWrapper>
+              )
 
-          case 'component':
-            // Render React components based on componentName
-            switch (element.componentName) {
-              case 'WorkshopRegistration':
-                return <WorkshopRegistration key={index} />
-              default:
-                return (
-                  <div key={index} className="p-4 bg-red-50 border border-red-200 rounded-lg">
-                    <p className="text-red-600">Unknown component: {element.componentName}</p>
-                  </div>
-                )
-            }
+            case 'component':
+              // Render React components based on componentName
+              switch (element.componentName) {
+                case 'WorkshopRegistration':
+                  return (
+                    <MotionWrapper key={index}>
+                      <WorkshopRegistration />
+                    </MotionWrapper>
+                  )
+                default:
+                  return (
+                    <MotionWrapper key={index}>
+                      <div className="p-4 bg-red-50 border border-red-200 rounded-lg">
+                        <p className="text-red-600">Unknown component: {element.componentName}</p>
+                      </div>
+                    </MotionWrapper>
+                  )
+              }
 
-          case 'paragraph':
-            return (
-              <p key={index} className="text-foreground leading-relaxed mb-4">
-                {renderInlineContent(element.content)}
-              </p>
-            )
+            case 'paragraph':
+              return (
+                <MotionWrapper key={index}>
+                  <p className="text-foreground leading-relaxed mb-4">
+                    {renderInlineContent(element.content)}
+                  </p>
+                </MotionWrapper>
+              )
 
-          default:
-            return null
-        }
-      })}
-    </div>
+            default:
+              return null
+          }
+        })}
+      </AnimatePresence>
+    </motion.div>
   )
 }

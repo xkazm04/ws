@@ -17,6 +17,7 @@ export function MdCheckbox({ content, id, renderInlineContent, onToggle, isCheck
           id={id}
           checked={isChecked}
           onChange={() => onToggle(id)}
+          autoComplete="off"
           className="sr-only"
         />
         <label 
