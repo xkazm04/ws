@@ -1,4 +1,4 @@
-import { useState, useMemo } from 'react'
+import { useState, useMemo, useRef, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { MdCode, MdCheckbox, MdList, MdImage } from './md'
 import { WorkshopRegistration } from './WorkshopRegistration'
@@ -11,6 +11,8 @@ interface MarkdownRendererProps {
 export function MarkdownRenderer({ content }: MarkdownRendererProps) {
   const [checkboxStates, setCheckboxStates] = useState<Record<string, boolean>>({})
   const [animatingCheckboxes, setAnimatingCheckboxes] = useState<Set<string>>(new Set())
+  const [hasAnimated, setHasAnimated] = useState(false)
+  const contentRef = useRef<string>(content)
 
   const toggleCheckbox = (id: string) => {
     setCheckboxStates(prev => {
@@ -34,6 +36,24 @@ export function MarkdownRenderer({ content }: MarkdownRendererProps) {
       }
     })
   }
+
+  // Track content changes to determine when to animate
+  useEffect(() => {
+    if (contentRef.current !== content) {
+      contentRef.current = content
+      setHasAnimated(false)
+      // Clear checkbox states when content changes
+      setCheckboxStates({})
+    }
+  }, [content])
+
+  // Mark as animated after first render
+  useEffect(() => {
+    if (!hasAnimated) {
+      const timer = setTimeout(() => setHasAnimated(true), 100)
+      return () => clearTimeout(timer)
+    }
+  }, [hasAnimated])
 
   const parsedElements = useMemo(() => parseMarkdownContent(content), [content])
 
@@ -96,14 +116,18 @@ export function MarkdownRenderer({ content }: MarkdownRendererProps) {
     <motion.div 
       className="prose prose-gray max-w-none"
       variants={containerVariants}
-      initial="hidden"
-      animate="visible"
-      key={content.slice(0, 50)} // Re-trigger animation when content changes
+      initial={hasAnimated ? false : "hidden"}
+      animate={hasAnimated ? false : "visible"}
+      key={`content-${contentRef.current.slice(0, 50)}`} // Only change key when content actually changes
     >
       <AnimatePresence mode="wait">
         {parsedElements.map((element, index) => {
           const MotionWrapper = ({ children }: { children: React.ReactNode }) => (
-            <motion.div variants={itemVariants}>
+            <motion.div 
+              variants={hasAnimated ? {} : itemVariants}
+              initial={hasAnimated ? false : "hidden"}
+              animate={hasAnimated ? false : "visible"}
+            >
               {children}
             </motion.div>
           )
