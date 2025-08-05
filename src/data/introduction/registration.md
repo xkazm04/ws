@@ -22,7 +22,7 @@ The beauty of n8n lies in its visual, drag-and-drop interface that makes automat
 
 - [ ] Open the link and pass account credentials above
 
-TBD: To discuss pre-registration
+TBD: Move to pre-registration mechanism
 
 
 **Useful resources**

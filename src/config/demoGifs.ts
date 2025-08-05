@@ -18,4 +18,5 @@ export const DEMO_GIF_CONFIG: Record<string, string> = {
   'asana': '/demo-gifs/asana.gif',
   
   // Tools chapter has no GIF - will not show demo panel
+  'email-state': '/demo-gifs/finale.gif',
 }

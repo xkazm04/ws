@@ -30,7 +30,7 @@ Usual way of testing workflow logic is rather to mock before connecting to a rea
 
 ---
 
-### Example response #1: **ACTION_REQUIRED**
+### Example response #1: ACTION_REQUIRED
 - **Subject:** "Timesheet Approval Required - Sarah Johnson (July 29 - Aug 2, 2025)"
 - **Content:** Timesheet approval request with deadline
 
