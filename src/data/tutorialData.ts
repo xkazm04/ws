@@ -16,7 +16,7 @@ import exportMd from './workflow/export.md'
 // Optional imports
 import toolsMd from './optional/tools.md'
 import asanaDetailMd from './optional/asanaDetail.md'
-
+import resourcesMd from './optional/resources.md'
 export interface Chapter {
   id: string
   title: string
@@ -139,6 +139,12 @@ export const tutorialData: Tutorial = {
           title: "Asana metadata",
           completed: false,
           content: asanaDetailMd
+        },
+        {
+          id: "resources",
+          title: "Resources",
+          completed: false,
+          content: resourcesMd
         }
       ]
     }

@@ -54,12 +54,11 @@ export function WorkshopContent() {
     ...tutorialData,
     description: (
       <div className="space-y-2">
-        <p className="text-sm text-muted-foreground">
-          <span className="font-mono font-medium text-foreground">https://n8n-finance.groupondev.com/</span>
-        </p>
-        <p className="text-sm text-muted-foreground">
-          Login: <span className="font-mono font-medium text-foreground">{userProfile.loginEmail}</span>
-        </p>
+        <ul className="text-sm text-muted-foreground">
+          <li>Login: <span className="font-sans font-medium text-foreground">{userProfile.loginEmail}</span></li>
+          <li>Pass: <span className="font-sans font-medium text-foreground">WorkshopFINAIn8n</span></li>
+          <li>URL: <span className="font-sans font-medium text-foreground">https://n8n-finance.groupondev.com</span></li>
+        </ul>
       </div>
     )
   } : tutorialData

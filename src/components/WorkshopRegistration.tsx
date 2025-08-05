@@ -150,12 +150,11 @@ export function WorkshopRegistration() {
                 className="p-6 rounded-lg border border-slate-200 bg-white"
               >
                 {/* Login Email */}
-                <div className="space-y-3 mb-6">
-                  <Label className="text-base font-semibold text-slate-700 flex items-center gap-2">
-                    <LinkIcon className="w-5 h-5" />
-                    Login Email
+                <div className="flex items-center gap-4 mb-6">
+                  <Label className="text-base font-semibold text-slate-700 flex items-center gap-2 min-w-0 w-32">
+                    Email
                   </Label>
-                  <div className="flex gap-3">
+                  <div className="flex flex-1 gap-3">
                     <div className="flex-1 p-4 bg-slate-50 rounded-lg border">
                       <p className="font-mono text-base text-slate-800">{userProfile.loginEmail}</p>
                     </div>
@@ -202,17 +201,66 @@ export function WorkshopRegistration() {
                   </div>
                 </div>
 
+                {/* Password */}
+                <div className="flex items-center gap-4 mb-6">
+                  <Label className="text-base font-semibold text-slate-700 min-w-0 w-32">
+                    Password
+                  </Label>
+                  <div className="flex flex-1 gap-3">
+                    <div className="flex-1 p-4 bg-slate-50 rounded-lg border">
+                      <p className="font-mono text-base text-slate-800">WorkshopFINAIn8n</p>
+                    </div>
+                    <motion.div
+                      whileHover={{ scale: 1.05 }}
+                      whileTap={{ scale: 0.95 }}
+                    >
+                      <Button
+                        onClick={() => copyToClipboard('WorkshopFINAIn8n')}
+                        variant="outline"
+                        size="lg"
+                        className="h-14 px-4 border-slate-300 hover:border-blue-500 hover:bg-blue-50 transition-all duration-200"
+                        disabled={copyState === 'copying'}
+                      >
+                        <AnimatePresence mode="wait">
+                          {copyState === 'idle' && (
+                            <motion.div
+                              key="idle"
+                            >
+                              <CopyIcon className="w-5 h-5" />
+                            </motion.div>
+                          )}
+                          {copyState === 'copying' && (
+                            <motion.div
+                              key="copying"
+                            >
+                              <motion.div
+                                animate={{ rotate: 360 }}
+                                transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
+                                className="w-5 h-5 border-2 border-blue-600 border-t-transparent rounded-full"
+                              />
+                            </motion.div>
+                          )}
+                          {copyState === 'copied' && (
+                            <motion.div
+                              key="copied"
+                            >
+                              <CheckCircleIcon className="w-5 h-5 text-green-600" />
+                            </motion.div>
+                          )}
+                        </AnimatePresence>
+                      </Button>
+                    </motion.div>
+                  </div>
+                </div>
+
                 {/* Workshop App Access */}
                 <div className="space-y-3">
-                  <Label className="text-base font-semibold text-slate-700">
-                    Workshop Access
-                  </Label>
                   <motion.div
                     whileHover={{ scale: 1.01 }}
                     whileTap={{ scale: 0.99 }}
                   >
                     <Button
-                      onClick={() => window.open(userProfile.invitationUrl, '_blank')}
+                      onClick={() => window.open('https://n8n-finance.groupondev.com', '_blank')}
                       size="lg"
                       className="w-full h-14 bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 text-white font-semibold shadow-lg hover:shadow-xl transition-all duration-200"
                     >
@@ -249,28 +297,30 @@ export function WorkshopRegistration() {
             >
               <form onSubmit={handleSubmit} className="space-y-6">
                 <div className="space-y-3">
-                  <Label htmlFor="name" className="text-base font-semibold text-slate-700">
-                    Full Name *
-                  </Label>
-                  <div>
-                    <Input
-                      id="name"
-                      type="text"
-                      value={formData.name}
-                      onChange={handleInputChange('name')}
-                      className={`h-12 text-base transition-all duration-200 ${
-                        errors.name 
-                          ? 'border-red-300 focus:border-red-500 focus:ring-red-200' 
-                          : 'border-slate-300 focus:border-blue-500 focus:ring-blue-200'
-                      }`}
-                      placeholder="Enter your full name"
-                    />
+                  <div className="flex items-center gap-4">
+                    <Label htmlFor="name" className="text-base font-semibold text-slate-700 min-w-0 w-32">
+                      Full Name *
+                    </Label>
+                    <div className="flex-1">
+                      <Input
+                        id="name"
+                        type="text"
+                        value={formData.name}
+                        onChange={handleInputChange('name')}
+                        className={`h-12 text-base transition-all duration-200 ${
+                          errors.name 
+                            ? 'border-red-300 focus:border-red-500 focus:ring-red-200' 
+                            : 'border-slate-300 focus:border-blue-500 focus:ring-blue-200'
+                        }`}
+                        placeholder="Enter your full name"
+                      />
+                    </div>
                   </div>
                   <AnimatePresence>
                     {errors.name && (
                       <motion.div
                       >
-                        <Alert variant="destructive" className="py-3">
+                        <Alert variant="destructive" className="py-3 ml-36">
                           <AlertTriangleIcon className="h-4 w-4" />
                           <AlertDescription className="text-sm">
                             {errors.name}

@@ -17,18 +17,11 @@ The beauty of n8n lies in its visual, drag-and-drop interface that makes automat
 ---
 ## Registration 
 - [ ] Ensure your **VPN** is active
-- [ ] Retrieve invitation link by submitting the form below
 <component>WorkshopRegistration</component>
 
-- [ ] Open the link and pass account credentials above
-
-TBD: Move to pre-registration mechanism
+- [ ] **Open n8n app** on button click and pass account credentials above
 
 
-**Useful resources**
-
-- AI Beginner tutorial: [Leon Van Zyl - YouTube](https://www.youtube.com/watch?v=CfD17vBCPEU)
-- Workflow templates: [n8n workflows](https://n8n.io/workflows/)
 ---
 
 ## Ready to Get Started?
