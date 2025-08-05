@@ -68,18 +68,9 @@ export function WorkshopContent() {
     ...tutorialData,
     description: (
       <div className="space-y-2">
-        <div className="flex items-center gap-3">
-          <span>Welcome {userProfile.name}! Your workshop invitation:</span>
-          <Button
-            onClick={() => copyToClipboard(userProfile.invitationUrl)}
-            variant="outline"
-            size="sm"
-            className="flex items-center gap-2 text-xs"
-          >
-            <CopyIcon className="w-3 h-3" />
-            Copy Link
-          </Button>
-        </div>
+        <p className="text-sm text-muted-foreground">
+          <span className="font-mono font-medium text-foreground">https://n8n-finance.groupondev.com/</span>
+        </p>
         <p className="text-sm text-muted-foreground">
           Login: <span className="font-mono font-medium text-foreground">{userProfile.loginEmail}</span>
         </p>

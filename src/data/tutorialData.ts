@@ -1,16 +1,17 @@
 import React from 'react'
 // Introduction imports
 import introMd from './introduction/intro.md'
+import registrationMd from './introduction/registration.md'
 // Credentials imports
 import emailMd from './credentials/email.md'
 import geminiMd from './credentials/gemini.md'
-import credentialsMd from './credentials/credentials.md'
 import credentialsAsanaMd from './credentials/asana.md'
 // Workflow imports
 import gmailMd from './workflow/gmail.md'
 import aiAgentMd from './workflow/ai-agent.md'
 import conditionalMd from './workflow/conditional.md'
 import workflowAsanaMd from './workflow/asana.md'
+import emailStateMd from './workflow/emailState.md'
 // Optional imports
 import toolsMd from './optional/tools.md'
 import asanaDetailMd from './optional/asanaDetail.md'
@@ -35,7 +36,7 @@ export interface Tutorial {
 }
 
 export const tutorialData: Tutorial = {
-  title: "n8n workflow",
+  title: "n8n workshop",
   description: "This tutorial will guide you through creating an automated workflow with n8n, covering Gmail integration, AI agents, email states, and powerful tools.",
   categories: [
     {
@@ -47,6 +48,12 @@ export const tutorialData: Tutorial = {
           title: "Getting Started",
           completed: false,
           content: introMd
+        },
+        {
+          id: "registration",
+          title: "Workshop Registration",
+          completed: false,
+          content: registrationMd
         }
       ]
     },
@@ -103,10 +110,10 @@ export const tutorialData: Tutorial = {
           content: workflowAsanaMd
         },
         {
-          id: "tools",
-          title: "Optional: Tools for AI",
+          id: "email-state",
+          title: "Email State",
           completed: false,
-          content: toolsMd
+          content: emailStateMd
         }
       ]
     },
@@ -116,7 +123,7 @@ export const tutorialData: Tutorial = {
       chapters: [
         {
           id: "tools",
-          title: "Optional: Tool for AI",
+          title: "Tool & AI",
           completed: false,
           content: toolsMd
         },

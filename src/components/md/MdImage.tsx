@@ -1,6 +1,5 @@
 import { useState } from 'react'
 import { X } from 'lucide-react'
-import Image from 'next/image'
 
 interface MdImageProps {
   content: string // URL
@@ -45,13 +44,13 @@ export function MdImage({ content, alt }: MdImageProps) {
     <>
       <div className="my-8">
         <div className="relative w-full max-w-5xl mx-auto">
-          <img
+                      <img
             src={content}
             alt={alt || 'Tutorial image'}
-            className="w-full h-auto rounded-lg shadow-lg border border-border object-contain max-h-[60vh] bg-white/50 cursor-pointer hover:shadow-xl transition-shadow duration-300"
+            className="w-full h-auto rounded-lg shadow-lg border border-border object-contain max-h-[50vh] bg-white/50 cursor-pointer hover:shadow-xl transition-shadow duration-300"
             loading="lazy"
             style={{
-              maxWidth: '85%', // Reduced by 15% from 100%
+              maxWidth: '70%', // Reduced more to make modal enlargement more noticeable
               height: 'auto',
               margin: '0 auto',
               display: 'block'
@@ -74,7 +73,7 @@ export function MdImage({ content, alt }: MdImageProps) {
           className="fixed inset-0 z-50 bg-black/80 flex items-center justify-center p-4"
           onClick={handleModalClick}
         >
-          <div className="relative max-w-[95vw] max-h-[95vh] overflow-auto">
+          <div className="relative max-w-[98vw] max-h-[98vh] overflow-auto flex items-center justify-center">
             <button
               onClick={handleCloseModal}
               className="absolute top-4 right-4 z-10 p-2 bg-black/50 hover:bg-black/70 rounded-full text-white transition-colors duration-200"
@@ -82,16 +81,16 @@ export function MdImage({ content, alt }: MdImageProps) {
             >
               <X size={24} />
             </button>
-            <Image
+            <img
               src={content}
               alt={alt || 'Tutorial image'}
-              className="w-full h-auto rounded-lg shadow-2xl object-contain"
+              className="rounded-lg shadow-2xl object-contain"
               style={{
-                maxWidth: '100%',
-                maxHeight: '95vh'
+                maxWidth: '95vw',
+                maxHeight: '90vh',
+                width: 'auto',
+                height: 'auto'
               }}
-              width={1000}
-              height={1000}
             />
             {alt && (
               <p className="text-center text-sm text-white/80 mt-4 italic">

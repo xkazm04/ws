@@ -1,12 +1,13 @@
 import { useState, useMemo } from 'react'
 import { MdCode, MdCheckbox, MdList, MdImage } from './md'
+import { WorkshopRegistration } from './WorkshopRegistration'
 
 interface MarkdownRendererProps {
   content: string
 }
 
 interface ParsedElement {
-  type: 'header' | 'paragraph' | 'code' | 'list' | 'checkbox' | 'bold' | 'link' | 'inline-code' | 'aside' | 'divider' | 'image'
+  type: 'header' | 'paragraph' | 'code' | 'list' | 'checkbox' | 'bold' | 'link' | 'inline-code' | 'aside' | 'divider' | 'image' | 'component'
   content: string
   level?: number
   language?: string
@@ -14,6 +15,7 @@ interface ParsedElement {
   id?: string
   href?: string
   alt?: string
+  componentName?: string
 }
 
 export function MarkdownRenderer({ content }: MarkdownRendererProps) {
@@ -166,6 +168,18 @@ export function MarkdownRenderer({ content }: MarkdownRendererProps) {
           })
         }
       }
+      // React components - <component>ComponentName</component>
+      else if (line.match(/^\s*<component>([^<]+)<\/component>\s*$/)) {
+        flushList()
+        const match = line.match(/^\s*<component>([^<]+)<\/component>\s*$/)
+        if (match) {
+          elements.push({
+            type: 'component',
+            content: match[1].trim(),
+            componentName: match[1].trim()
+          })
+        }
+      }
       // Regular paragraphs
       else {
         flushList()
@@ -304,6 +318,19 @@ export function MarkdownRenderer({ content }: MarkdownRendererProps) {
               alt={element.alt}
             />
             )
+
+          case 'component':
+            // Render React components based on componentName
+            switch (element.componentName) {
+              case 'WorkshopRegistration':
+                return <WorkshopRegistration key={index} />
+              default:
+                return (
+                  <div key={index} className="p-4 bg-red-50 border border-red-200 rounded-lg">
+                    <p className="text-red-600">Unknown component: {element.componentName}</p>
+                  </div>
+                )
+            }
 
           case 'paragraph':
             return (
