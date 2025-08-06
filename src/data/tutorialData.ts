@@ -12,6 +12,7 @@ import aiAgentMd from './workflow/ai-agent.md'
 import conditionalMd from './workflow/conditional.md'
 import workflowAsanaMd from './workflow/asana.md'
 import emailStateMd from './workflow/emailState.md'
+import emailProdMd from './workflow/emailProd.md'
 import exportMd from './workflow/export.md'
 // Optional imports
 import toolsMd from './optional/tools.md'
@@ -115,6 +116,12 @@ export const tutorialData: Tutorial = {
           title: "Email State",
           completed: false,
           content: emailStateMd
+        },
+        {
+          id: "email-prod",
+          title: "Email - Production test",
+          completed: false,
+          content: emailProdMd
         },
         {
           id: "export",

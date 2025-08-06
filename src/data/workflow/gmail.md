@@ -2,13 +2,21 @@
 
 Start the workflow with an incoming unread email
 
+- [ ]  **Create Workflow** on Overview page
+
+[](https://codahosted.io/docs/3PFXo2bENf/blobs/bl-vCkKa4IC_w/e543199c20b27ae6dd6b53457e9ef22f1231fe1e7ae3115cbc7472d9a543b965f47ff690df9924e0c8d6a52ebc29909cec49b5401e795b33b376ae5705a371fb49d52632211406ef922b7ec2206ad04f45370e1b0eec705ef3f94274e92f82b8dad11c8f)
+
 ## A. Trigger workflow
 
 - [ ]  Search for **Gmail trigger** and add it to your workflow
 
 [](https://codahosted.io/docs/3PFXo2bENf/blobs/bl-RU578fobeF/e071f7000d6380ea33639b669f9ef928294ab8645418de40b95993915783769c9acdc02b7a5d9fbcbb0d15bb8406050b51b04d423276841b8957f3b32e9dd735131b37fb9309ca6adbd478564d980f87111ea9fa8df108d97442cfde81dc3c0ad048d0b4)
 
-*Gmail Trigger Purpose**:** Automatically detect new unread emails (on message received)*
+- [ ]  Select option: **On Message Received**
+
+[](https://codahosted.io/docs/3PFXo2bENf/blobs/bl-gMK05cCTG-/5c4d6ee3a52eab6ba14ae9bd6b2eeec4e84646d4967e93e4afe086303af8594eefd3834db3be94e8f83a75525b00f5be95021578caad7089a3ad09520e66f4205cacc1ca908b448e4d48a0f40751c2285d5a28913000a90c37c76f77585f247463b014f3)
+
+Double click on created node and
 
 - [ ]  **Uncheck simplify** option to retrieve all email metadata
 - [ ]  **Apply filter** to the trigger node**:** *Read status → Unread emails only*
@@ -80,53 +88,3 @@ Triggers **ACTION_REQUIRED** because:
 ]
 
 ```
-### Example response #2: **NO_ACTION**
-
-- **Subject:** "TestCorp Monthly Newsletter - August 2025"
-- **Content:** Company newsletter with updates, highlights, and upcoming events
-Triggers NO_ACTION because:
-
-- Purely informational content
-- Newsletter/announcement format
-- No questions or requests directed at recipient
-- No deadlines or action items
-- FYI-style communication
-
-```js
- [ {
-    "id": "2987504f92c5482f",
-    "threadId": "2987504f92c5482f",
-    "labelIds": [
-      "UNREAD",
-      "INBOX"
-    ],
-    "sizeEstimate": 8240,
-    "html": "<!DOCTYPE html PUBLIC \\"-//W3C//DTD XHTML 1.0 Transitional//EN\\"\\n\\"<http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\\>">\\n\\n<html xmlns=\\"<http://www.w3.org/1999/xhtml\\>" lang=\\"en\\" xml:lang=\\"en\\">\\n  <head>\\n    <meta http-equiv=\\"Content-Type\\" content=\\"text/html; charset=utf-8\\">\\n    <meta name=\\"viewport\\" content=\\"width=device-width\\">\\n    <title></title>\\n    <link media=\\"all\\" rel=\\"stylesheet\\" href=\\"<https://testcorp.com/assets/email-styles.css\\>" />\\n  </head>\\n  <body>\\n    <table align=\\"center\\" class=\\"container-sm width-full\\" width=\\"100%\\">\\n      <tr>\\n        <td class=\\"center p-3\\" align=\\"center\\" valign=\\"top\\">\\n          <center>\\n            <table border=\\"0\\" cellspacing=\\"0\\" cellpadding=\\"0\\" align=\\"center\\" class=\\"width-full container-md\\" width=\\"100%\\">\\n  <tr>\\n    <td align=\\"center\\">\\n              <table>\\n  <tbody>\\n    <tr>\\n      <td height=\\"16\\" style=\\"font-size:16px;line-height:16px;\\">&#xA0;</td>\\n    </tr>\\n  </tbody>\\n</table>\\n\\n              <table border=\\"0\\" cellspacing=\\"0\\" cellpadding=\\"0\\" align=\\"left\\" width=\\"100%\\">\\n                <tr>\\n                  <td class=\\"text-center\\">\\n                    <img src=\\"<https://testcorp.com/assets/logo.png\\>" alt=\\"TestCorp\\" width=\\"32\\">\\n                    <h2 class=\\"lh-condensed mt-2 text-normal\\">\\n                        Monthly Company Newsletter\\n\\n                    </h2>\\n                  </td>\\n                </tr>\\n              </table>\\n              <table>\\n  <tbody>\\n    <tr>\\n      <td height=\\"16\\" style=\\"font-size:16px;line-height:16px;\\">&#xA0;</td>\\n    </tr>\\n  </tbody>\\n</table>\\n\\n</td>\\n  </tr>\\n</table>\\n            <table width=\\"100%\\" class=\\"width-full\\">\\n              <tr>\\n                <td class=\\"border rounded-2 d-block\\">\\n                  <table align=\\"center\\" class=\\"width-full text-center\\">\\n                    <tr>\\n                      <td class=\\"p-3 p-sm-4\\">\\n                        <table border=\\"0\\" cellspacing=\\"0\\" cellpadding=\\"0\\" align=\\"center\\" class=\\"width-full\\" width=\\"100%\\">\\n  <tr>\\n    <td align=\\"center\\">\\n                          \\n<table class=\\"width-full\\">\\n  <tbody>\\n    <tr >\\n      \\n  <td >\\n  <table>\\n    <tr>\\n      <td class=\\"text-left\\">\\n    <p>\\n      Dear Team,\\n    </p>\\n    <p>\\n      We're excited to share our August 2025 company newsletter with updates from across TestCorp.\\n    </p>\\n    <p>\\n      <strong>This Month's Highlights:</strong>\\n    </p>\\n    <p>\\n      • <strong>Q2 Results:</strong> We exceeded our revenue targets by 15% and welcomed 250 new customers<br>\\n      • <strong>New Hires:</strong> Please join us in welcoming 8 new team members across Engineering and Sales<br>\\n      • <strong>Office Updates:</strong> The Prague office renovation is complete and looks fantastic<br>\\n      • <strong>Recognition:</strong> Congratulations to the Marketing team for their award-winning campaign\\n    </p>\\n    <p>\\n      <strong>Upcoming Events:</strong><br>\\n      • August 15: All-hands meeting (virtual)<br>\\n      • August 22-23: Annual company retreat<br>\\n      • September 5: Q3 kickoff meetings\\n    </p>\\n    <p>\\n      <strong>Employee Spotlight:</strong><br>\\n      This month we're featuring Maria Gonzalez from our Customer Success team, who has been instrumental in improving our client retention rates.\\n    </p>\\n    <p>\\n      You can read the full newsletter and see photos from recent events on our company intranet.\\n    </p>\\n    <p>\\n      Thank you for your continued dedication and hard work!\\n    </p>\\n    <p>\\n      Best regards,<br>\\n      TestCorp Communications Team\\n    </p>\\n</td>\\n      <td ></td>\\n    </tr>\\n  </table>\\n</td>\\n\\n    </tr>\\n  </tbody>\\n</table>\\n\\n\\n</td>\\n  </tr>\\n</table>\\n                      </td>\\n                    </tr>\\n                  </table>\\n                </td>\\n              </tr>\\n            </table>\\n\\n\\n            <table border=\\"0\\" cellspacing=\\"0\\" cellpadding=\\"0\\" align=\\"center\\" class=\\"width-full text-center\\" width=\\"100%\\">\\n  <tr>\\n    <td align=\\"center\\">\\n              <table>\\n  <tbody>\\n    <tr>\\n      <td height=\\"16\\" style=\\"font-size:16px;line-height:16px;\\">&#xA0;</td>\\n    </tr>\\n  </tbody>\\n</table>\\n\\n              <table>\\n  <tbody>\\n    <tr>\\n      <td height=\\"16\\" style=\\"font-size:16px;line-height:16px;\\">&#xA0;</td>\\n    </tr>\\n  </tbody>\\n</table>\\n\\n              <p class=\\"f5 text-gray-light\\">  You're receiving this newsletter as a TestCorp employee.\\n</p>\\n</td>\\n  </tr>\\n</table>\\n            <table border=\\"0\\" cellspacing=\\"0\\" cellpadding=\\"0\\" align=\\"center\\" class=\\"width-full text-center\\" width=\\"100%\\">\\n  <tr>\\n    <td align=\\"center\\">\\n  <table>\\n  <tbody>\\n    <tr>\\n      <td height=\\"16\\" style=\\"font-size:16px;line-height:16px;\\">&#xA0;</td>\\n    </tr>\\n  </tbody>\\n</table>\\n\\n  <p class=\\"f6 text-gray-light\\">TestCorp Communications ・456 Business Ave ・Corporate City, CC 54321</p>\\n</td>\\n  </tr>\\n</table>\\n\\n          </center>\\n        </td>\\n      </tr>\\n    </table>\\n    <!-- prevent Gmail on iOS font size manipulation -->\\n   <div style=\\"display:none; white-space:nowrap; font:15px courier; line-height:0;\\"> &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; </div>\\n  </body>\\n</html>\\n",
-    "text": "Dear Team,\\n\\nWe're excited to share our August 2025 company newsletter with updates from across TestCorp.\\n\\nThis Month's Highlights:\\n\\n• Q2 Results: We exceeded our revenue targets by 15% and welcomed 250 new customers\\n• New Hires: Please join us in welcoming 8 new team members across Engineering and Sales\\n• Office Updates: The Prague office renovation is complete and looks fantastic\\n• Recognition: Congratulations to the Marketing team for their award-winning campaign\\n\\nUpcoming Events:\\n• August 15: All-hands meeting (virtual)\\n• August 22-23: Annual company retreat\\n• September 5: Q3 kickoff meetings\\n\\nEmployee Spotlight:\\nThis month we're featuring Maria Gonzalez from our Customer Success team, who has been instrumental in improving our client retention rates.\\n\\nYou can read the full newsletter and see photos from recent events on our company intranet.\\n\\nThank you for your continued dedication and hard work!\\n\\nBest regards,\\nTestCorp Communications Team\\n",
-    "textAsHtml": "<p>Dear Team,</p><p>We're excited to share our August 2025 company newsletter with updates from across TestCorp.</p><p><strong>This Month's Highlights:</strong></p><p>• <strong>Q2 Results:</strong> We exceeded our revenue targets by 15% and welcomed 250 new customers<br/>• <strong>New Hires:</strong> Please join us in welcoming 8 new team members across Engineering and Sales<br/>• <strong>Office Updates:</strong> The Prague office renovation is complete and looks fantastic<br/>• <strong>Recognition:</strong> Congratulations to the Marketing team for their award-winning campaign</p><p><strong>Upcoming Events:</strong><br/>• August 15: All-hands meeting (virtual)<br/>• August 22-23: Annual company retreat<br/>• September 5: Q3 kickoff meetings</p><p><strong>Employee Spotlight:</strong><br/>This month we're featuring Maria Gonzalez from our Customer Success team, who has been instrumental in improving our client retention rates.</p><p>You can read the full newsletter and see photos from recent events on our company intranet.</p><p>Thank you for your continued dedication and hard work!</p><p>Best regards,<br/>TestCorp Communications Team</p>",
-    "subject": "TestCorp Monthly Newsletter - August 2025",
-    "date": "2025-08-04T09:30:15.000Z",
-    "to": {
-      "value": [
-        {
-          "address": "you@gmail.com",
-          "name": "You"
-        }
-      ],
-      "html": "<span class=\\"mp_address_group\\"><span class=\\"mp_address_name\\">You</span> &lt;<a href=\\"<mailto:you@gmail.com>\\" class=\\"mp_address_email\\">you@gmail.com</a>&gt;</span>",
-      "text": "\\"You\\" <you@gmail.com>"
-    },
-    "from": {
-      "value": [
-        {
-          "address": "noreply@test.com",
-          "name": "TestCorp Communications"
-        }
-      ],
-      "html": "<span class=\\"mp_address_group\\"><span class=\\"mp_address_name\\">TestCorp Communications</span> &lt;<a href=\\"<mailto:noreply@test.com>\\" class=\\"mp_address_email\\">noreply@test.com</a>&gt;</span>",
-      "text": "\\"TestCorp Communications\\" <noreply@test.com>"
-    },
-    "messageId": "<7890b5ecg1eb_dc21892137cb@lowworker-6c989d0e7-u3q90.mail>"
-  }]
-```
-
