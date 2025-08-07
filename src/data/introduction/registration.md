@@ -17,9 +17,10 @@ The beauty of n8n lies in its visual, drag-and-drop interface that makes automat
 ---
 ## Registration 
 - [ ] Ensure your **VPN** is active
-<component>WorkshopRegistration</component>
-
-- [ ] **Open n8n app** on button click and pass account credentials above
+- [ ] **Sign in** [AI-Gateway](https://ai-gateway.groupondev.com/common) with your gmail account
+- [ ] **Register** n8n account in section **N8N For everyone**
+[AI Gateway - n8n for everyone](https://codahosted.io/docs/3PFXo2bENf/blobs/bl-BR0IKeO3FP/b26afc712af93916fe5016739ff0bd5a4ddc12917f4b2b1f5cc3fb7a1d7bd7cbf7c9034126f1cb8326150590a57042b257de4eddde3798ba4178c47b267e41eb70feebe583c7bdb56fdbb9c018bad3c2b55b9e9f929270b14d75d1e2d5a03b733558aa4e)
+- [ ] **Open n8n App** on [https://n8n-playground.groupondev.com](https://n8n-playground.groupondev.com/)
 
 
 ---

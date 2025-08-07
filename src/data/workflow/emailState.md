@@ -47,7 +47,6 @@ In order to test this scenario we will need to replace original prompt, so AI ca
     "messageId": "<7890b5ecg1eb_dc21892137cb@lowworker-6c989d0e7-u3q90.mail>"
   }
 ]
-
 ```
 
 **Subject**: "TestCorp Monthly Newsletter - August 2025"
