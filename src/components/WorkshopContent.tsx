@@ -54,8 +54,6 @@ export function WorkshopContent() {
     ...tutorialData,
     description: (
       <div className="space-y-2">
-        <ul className="text-sm text-muted-foreground">
-        </ul>
       </div>
     )
   } : tutorialData
